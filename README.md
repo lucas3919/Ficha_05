@@ -3,24 +3,23 @@
 <br>
 
 # Description:
-Create a main thread
+Create multiple threads based on the lines of a matrix given by the user and add the numbers given on each interation of the matrix
 <br>
 <br>
 
 # How it works:
-Insert the Process Quantity and the Quantum, respectively. <br>
-Then insert the Start time and the Time needed to Finish the processes for each Process. <br>
-Aftert that the operations will proceed and collect the average execution time, average wait time and average response time.
+Insert the Size of the matrix you wish, after that give the numbers the matrix is composed of. And then the program will print the result after adding all the numbers given
 
 Ex:
 ```
-Proccess Quantity: 4       Quantum: 2
+Insira a Ordem da Matriz:  2
 ```
-```4 2
-Start Time: 0  Time Needed to Finish: 20
-Start Time: 0  Time Needed to Finish: 10
-Start Time: 4  Time Needed to Finish: 6
-Start Time: 4  Time Needed to Finish: 8
+```
+Digite o 1º número da 1º linha: 1
+Digite o 2º número da 1º linha: 2
+
+Digite o 1º número da 2º linha: 3
+Digite o 2º número da 2º linha: 4
 ```
 <br>
 <br>
@@ -28,8 +27,8 @@ Start Time: 4  Time Needed to Finish: 8
 # Usage:
 ### 1.Installation
 ``` bash
-$ git clone https://github.com/lucas3919/Ficha_04.git
-$ cd Ficha_04
+$ git clone https://github.com/lucas3919/Ficha_05.git
+$ cd Ficha_05
 ```
 
 ### 2.Compile

@@ -34,13 +34,14 @@ int main(void) {
 
 	printf("Insira a Ordem da Matriz: ");
 	scanf("%d", &ordem);
+	printf("\n");
   	int matriz[ordem][ordem];
  	pthread_t threads[ordem];
 
 	// Pega os dados da matriz
   	for (int linha = 0; linha < ordem; linha++) {
     	for (int coluna = 0; coluna < ordem; coluna++) {
-			printf("Digite o %dº número da %dº linha: ", coluna, linha+1);
+			printf("Digite o %dº número da %dº linha: ", coluna+1, linha+1);
       		scanf("%d", &numero);
       		matriz[linha][coluna] = numero;
     	}
