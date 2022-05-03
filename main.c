@@ -1,52 +1,68 @@
 #include <pthread.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-void *increment(void *arg) {
-  	pthread_mutex_lock(&mutex);
-  	count += 1;
-  	printf("Counter = %d\n", count);
-  	pthread_mutex_unlock(&mutex);
-  	return arg;
-}
+// Variaveis Globais
+int resultado = 0;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-struct matriz {
-	matriz[ordem][ordem]
+// Struct da Matriz
+struct dados {
+  	int ordem, linha_atual, *linha_matriz;
 };
 
+// Incremento das Threads
+void *incremento(void *argumentos) 
+{
+	struct dados *dados = (struct dados *) argumentos;
+	int ordem = (*dados).ordem;
+	int soma = 0;
+
+	for (int index = 0; index < ordem; index++) {
+		soma += dados->linha_matriz[index];
+	}
+	
+	pthread_mutex_lock(&mutex);
+	resultado += soma;
+	pthread_mutex_unlock(&mutex);
+	return argumentos;
+}
 
 int main(void) {
+  	
+	int ordem, numero;
 
-	int ordem;
+	printf("Insira a Ordem da Matriz: ");
+	scanf("%d", &ordem);
+  	int matriz[ordem][ordem];
+ 	pthread_t threads[ordem];
 
-    printf("Insira a ordem da Matriz: ");
-    scanf("%d", &ordem);
-    int matriz[ordem][ordem];
-
-    for (int linha = 0; linha < ordem; linha++) {
-        for (int coluna = 0; coluna < ordem; coluna++) {
-            scanf("%d", &matriz[linha][coluna]);
-        }
-    }
-
-	int threads_qtd = ordem;
-	pthread_t threads[threads_qtd];
-
-
-  	for (int index = 0; index < threads_qtd; index++) {
-    	if (pthread_create(&(threads[index]), NULL, increment, NULL)) {
-      		printf("Thread %d not created", index);
-      		return 1;
+  	for (int linha = 0; linha < ordem; linha++) {
+    	for (int coluna = 0; coluna < ordem; coluna++) {
+			printf("Digite o %dº número da %dº linha: ", coluna, linha+1);
+      		scanf("%d", &numero);
+      		matriz[linha][coluna] = numero;
     	}
+		printf("\n");
   	}
 
-	for (int linha = 0; linha < threads_qtd; linha++) {
-		if (pthread_create(&(threads[linha]), NULL, increment, NULL)) {
-			for(int coluna = 0; coluna < ordem; coluna++) {
-        		threads[linha] = matriz[linha][coluna];
-    		}
-      	return 1;
-    	}
+	for (int i = 0; i < ordem; i++) {
+		struct dados *argumentos = (struct dados *)malloc(sizeof(struct dados));
+		(*argumentos).ordem = ordem;
+		(*argumentos).linha_matriz = (int *)malloc(ordem * sizeof(int));
+		(*argumentos).linha_atual = i;
+
+		for (int j = 0; j < ordem; j++) {
+			(*argumentos).linha_matriz[j] = matriz[i][j];
+		}
+
+		pthread_create(&(threads[i]), NULL, incremento, (void *) argumentos);
 	}
 
+	for (int index = 0; index < ordem; index++) {
+		pthread_join(threads[index], NULL);
+	}
 
-	return 0;}
+	printf("%d", resultado);
+	return 0;
+}
