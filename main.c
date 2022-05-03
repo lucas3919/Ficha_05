@@ -1,6 +1,6 @@
-#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
 
 // Variaveis Globais
 int resultado = 0;
@@ -8,13 +8,13 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 // Struct da Matriz
 struct dados {
-  	int ordem, linha_atual, *linha_matriz;
+  	int ordem, *linha_matriz;
 };
 
 // Incremento das Threads
-void *incremento(void *argumentos) 
+void *incremento(void *dados_matriz) 
 {
-	struct dados *dados = (struct dados *) argumentos;
+	struct dados *dados = (struct dados *) dados_matriz;
 	int ordem = (*dados).ordem;
 	int soma = 0;
 
@@ -25,7 +25,7 @@ void *incremento(void *argumentos)
 	pthread_mutex_lock(&mutex);
 	resultado += soma;
 	pthread_mutex_unlock(&mutex);
-	return argumentos;
+	return dados_matriz;
 }
 
 int main(void) {
@@ -37,6 +37,7 @@ int main(void) {
   	int matriz[ordem][ordem];
  	pthread_t threads[ordem];
 
+	// Pega os dados da matriz
   	for (int linha = 0; linha < ordem; linha++) {
     	for (int coluna = 0; coluna < ordem; coluna++) {
 			printf("Digite o %dº número da %dº linha: ", coluna, linha+1);
@@ -46,19 +47,20 @@ int main(void) {
 		printf("\n");
   	}
 
-	for (int i = 0; i < ordem; i++) {
-		struct dados *argumentos = (struct dados *)malloc(sizeof(struct dados));
-		(*argumentos).ordem = ordem;
-		(*argumentos).linha_matriz = (int *)malloc(ordem * sizeof(int));
-		(*argumentos).linha_atual = i;
+	// Passa os dados da Matriz para uma struct e cria as threads dentro do loop, passando uma struct para cada Thread criada
+	for (int linha = 0; linha < ordem; linha++) {
+		struct dados *dados_matriz = (struct dados *) malloc (sizeof (struct dados));
+		(*dados_matriz).ordem = ordem;
+		(*dados_matriz).linha_matriz = (int *) malloc (ordem * sizeof(int));
 
-		for (int j = 0; j < ordem; j++) {
-			(*argumentos).linha_matriz[j] = matriz[i][j];
+		for (int coluna = 0; coluna < ordem; coluna++) {
+			(*dados_matriz).linha_matriz[coluna] = matriz[linha][coluna];
 		}
 
-		pthread_create(&(threads[i]), NULL, incremento, (void *) argumentos);
+		pthread_create(&(threads[linha]), NULL, incremento, (void *) dados_matriz);
 	}
 
+	// Da Terminate nas Threads depois que elas acabarem suas funções
 	for (int index = 0; index < ordem; index++) {
 		pthread_join(threads[index], NULL);
 	}
