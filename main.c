@@ -11,7 +11,7 @@ struct dados {
   	int ordem, *linha_matriz;
 };
 
-// Incremento das Threads
+// Faz as somas dos Dados salvos nas Threads baseado na struct recebida e atribui o valor na variavel global do resultado
 void *incremento(void *dados_matriz) 
 {
 	struct dados *dados = (struct dados *) dados_matriz;
